@@ -1,1 +1,18 @@
 /task
+__pycache__/
+.pytest_cache/
+.venv/
+*.py[cod]
+
+# Воспроизводимые, но крупные локальные артефакты.
+data/raw/
+data/generated/
+index/
+*.pdf
+*.pkl
+*.npz
+*.sha256.json
+dev_answers.jsonl
+dev_trace.jsonl
+experiments_runs/
+.env

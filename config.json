@@ -1,0 +1,29 @@
+{
+  "model": {
+    "name": "Qwen/Qwen3.5-4B",
+    "revision": "PIN_BEFORE_SUBMISSION_WITH_HF_COMMIT_SHA",
+    "base_url_env": "LLM_BASE_URL",
+    "api_key_env": "LLM_API_KEY",
+    "submission_id_env": "SUBMISSION_ID",
+    "temperature": 0.7,
+    "top_p": 0.8,
+    "top_k": 20,
+    "presence_penalty": 1.5,
+    "max_tokens": 700,
+    "enable_thinking": false,
+    "timeout_seconds": 120
+  },
+  "retrieval": {
+    "top_pages": 3,
+    "neighbor_radius": 1,
+    "max_context_chars": 18000,
+    "bm25_weight": 0.65,
+    "char_tfidf_weight": 0.35
+  },
+  "limits": {
+    "max_llm_calls": 2,
+    "max_input_tokens": 16384,
+    "max_output_tokens": 4096,
+    "max_single_request_tokens": 8192
+  }
+}

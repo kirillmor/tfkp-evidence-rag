@@ -1,0 +1,8 @@
+{"id":"own_001","category":"conditions","answer_ids":["A"],"abstain":false,"acceptable_citation_sets":[["p_0011"]],"rationale":"Достаточное условие голоморфности — вещественная дифференцируемость и условия Коши—Римана."}
+{"id":"own_002","category":"conditions","answer_ids":["A"],"abstain":false,"acceptable_citation_sets":[["p_0035"]],"rationale":"Это ровно условие теоремы Морера."}
+{"id":"own_003","category":"matching","answer_ids":["B"],"abstain":false,"acceptable_citation_sets":[["p_0028","p_0031"]],"rationale":"Ненулевой интеграл по замкнутому контуру противоречит существованию глобальной первообразной."}
+{"id":"own_004","category":"matching","answer_ids":["B"],"abstain":false,"acceptable_citation_sets":[["p_0011","p_0013"]],"rationale":"Для u=x и v=y выполнены условия Коши—Римана."}
+{"id":"own_005","category":"calculation","answer_ids":["C"],"abstain":false,"acceptable_citation_sets":[["p_0036","p_0037"]],"rationale":"c3=f'''(0)/3!=12/6=2."}
+{"id":"own_006","category":"calculation","answer_ids":["A"],"abstain":false,"acceptable_citation_sets":[["p_0037"]],"rationale":"По теореме Лиувилля целая ограниченная функция постоянна."}
+{"id":"own_007","category":"insufficient","answer_ids":[],"abstain":true,"acceptable_citation_sets":[["p_0037"]],"rationale":"Целость и значение в одной точке не определяют значение в другой.","missing_information":"Формула или дополнительные условия на f."}
+{"id":"own_008","category":"insufficient","answer_ids":[],"abstain":true,"acceptable_citation_sets":[["p_0036"]],"rationale":"Сходимость в круге задаёт только нижнюю границу R≥2.","missing_information":"Сведения о ближайшей особенности или коэффициентах ряда."}
