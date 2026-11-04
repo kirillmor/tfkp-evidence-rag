@@ -20,6 +20,11 @@
     "bm25_weight": 0.65,
     "char_tfidf_weight": 0.35
   },
+  "server": {
+    "vllm_max_model_len": 8192,
+    "vllm_max_num_seqs": 1,
+    "enforce_eager": true
+  },
   "limits": {
     "max_llm_calls": 2,
     "max_input_tokens": 16384,

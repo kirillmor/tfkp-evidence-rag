@@ -13,7 +13,8 @@ PDF_PATH="${PDF_PATH:-data/raw/tfkp_2025.pdf}"
 INDEX_DIR="${INDEX_DIR:-index}"
 RESULTS_DIR="${COLAB_RESULTS_DIR:-}"
 VLLM_PORT="${VLLM_PORT:-8000}"
-VLLM_MAX_MODEL_LEN="${VLLM_MAX_MODEL_LEN:-8192}"
+VLLM_MAX_MODEL_LEN="${VLLM_MAX_MODEL_LEN:-}"
+VLLM_MAX_NUM_SEQS="${VLLM_MAX_NUM_SEQS:-}"
 VLLM_START_TIMEOUT="${VLLM_START_TIMEOUT:-900}"
 VLLM_PID=""
 
@@ -87,6 +88,19 @@ if [[ "$MODEL_REVISION" == PIN_* ]] || [[ ${#MODEL_REVISION} -ne 40 ]]; then
   MODEL_REVISION="$($PYTHON_BIN -c 'import json; print(json.load(open("config.json", encoding="utf-8"))["model"]["revision"])')"
 fi
 
+if [[ -z "$VLLM_MAX_MODEL_LEN" ]]; then
+  VLLM_MAX_MODEL_LEN="$($PYTHON_BIN -c 'import json; print(json.load(open("config.json", encoding="utf-8"))["server"]["vllm_max_model_len"])')"
+fi
+if [[ -z "$VLLM_MAX_NUM_SEQS" ]]; then
+  VLLM_MAX_NUM_SEQS="$($PYTHON_BIN -c 'import json; print(json.load(open("config.json", encoding="utf-8"))["server"]["vllm_max_num_seqs"])')"
+fi
+VLLM_ENFORCE_EAGER="$($PYTHON_BIN -c 'import json; print(json.load(open("config.json", encoding="utf-8"))["server"]["enforce_eager"])')"
+VLLM_RUNTIME_ARGS=()
+if [[ "$VLLM_ENFORCE_EAGER" == "True" ]]; then
+  # На T4 отключаем CUDA Graph: он требует дополнительную видеопамять при старте.
+  VLLM_RUNTIME_ARGS+=(--enforce-eager)
+fi
+
 mkdir -p logs
 echo "Запуск vLLM с ревизией ${MODEL_REVISION}..."
 "$VLLM_BIN" serve Qwen/Qwen3.5-4B \
@@ -94,6 +108,8 @@ echo "Запуск vLLM с ревизией ${MODEL_REVISION}..."
   --host 127.0.0.1 \
   --port "$VLLM_PORT" \
   --max-model-len "$VLLM_MAX_MODEL_LEN" \
+  --max-num-seqs "$VLLM_MAX_NUM_SEQS" \
+  "${VLLM_RUNTIME_ARGS[@]}" \
   >logs/vllm.log 2>&1 &
 VLLM_PID=$!
 
