@@ -13,4 +13,5 @@ index/
 *.npz
 *.sha256.json
 experiments_runs/
+logs/
 .env
