@@ -105,6 +105,48 @@ def make_prompt(question: dict[str, Any], context: list[dict[str, Any]], retry: 
     )
 
 
+def prompt_token_upper_bound(prompt: str) -> int:
+    """Даёт безопасную верхнюю оценку токенов без вызова внешнего токенизатора.
+
+    Число UTF-8-байтов не меньше числа byte-level токенов. Запас покрывает
+    служебные токены chat template, поэтому проверка выполняется до запроса.
+    """
+    return len(prompt.encode("utf-8")) + 512
+
+
+def fit_context_to_limits(
+    question: dict[str, Any], context: list[dict[str, Any]], config: dict[str, Any]
+) -> list[dict[str, Any]]:
+    """Оставляет максимум доказательств, не выходя за лимит одного запроса."""
+    limits = config["limits"]
+    max_prompt_tokens = limits["max_single_request_tokens"] - config["model"]["max_tokens"]
+    if prompt_token_upper_bound(make_prompt(question, [], retry=True)) > max_prompt_tokens:
+        raise ValueError(f"Вопрос {question['id']} слишком длинный для лимита одного запроса")
+
+    selected: list[dict[str, Any]] = []
+    for document in context:
+        candidate = selected + [document]
+        if prompt_token_upper_bound(make_prompt(question, candidate, retry=True)) <= max_prompt_tokens:
+            selected = candidate
+            continue
+
+        # Сохраняем начало последнего фрагмента, если оно ещё помещается.
+        text = str(document["text"])
+        low, high, best = 0, len(text), 0
+        while low <= high:
+            middle = (low + high) // 2
+            shortened = {**document, "text": text[:middle]}
+            if prompt_token_upper_bound(make_prompt(question, selected + [shortened], retry=True)) <= max_prompt_tokens:
+                best = middle
+                low = middle + 1
+            else:
+                high = middle - 1
+        if best:
+            selected.append({**document, "text": text[:best]})
+        break
+    return selected
+
+
 def parse_object(content: str) -> dict[str, Any] | None:
     """Принимает JSON даже если сервер по ошибке добавил короткое обрамление."""
     try:
@@ -201,14 +243,15 @@ def answer_question(
     include_options = mode not in {"single-rag", "no-options", "no-context"}
     query = question_text(question, include_options=include_options)
     context, retrieved = select_context(index, query, mode)
+    context = fit_context_to_limits(question, context, config)
     allowed = {str(item["block_id"]) for item in context}
     start = time.perf_counter()
     input_tokens = output_tokens = calls = 0
     answer: dict[str, Any] | None = None
     for retry in range(2):
         prompt = make_prompt(question, context, retry=bool(retry))
-        # Оценка консервативна для русского текста и предотвращает лишний повтор.
-        estimated_input = (len(prompt) + 2) // 3
+        # Оценка является верхней границей и предотвращает запрос сверх лимита.
+        estimated_input = prompt_token_upper_bound(prompt)
         limits = config["limits"]
         if (
             calls >= limits["max_llm_calls"]
@@ -220,7 +263,11 @@ def answer_question(
         calls += 1
         input_tokens += request_input
         output_tokens += request_output
-        if input_tokens > limits["max_input_tokens"] or output_tokens > limits["max_output_tokens"]:
+        if (
+            request_input + config["model"]["max_tokens"] > limits["max_single_request_tokens"]
+            or input_tokens > limits["max_input_tokens"]
+            or output_tokens > limits["max_output_tokens"]
+        ):
             raise RuntimeError(f"Вопрос {question['id']}: превышен лимит токенов")
         answer = normalize_answer(
             parse_object(content), question, allowed, allow_empty_citations=(mode == "no-context")

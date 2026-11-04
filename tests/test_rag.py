@@ -13,7 +13,15 @@ from rank_bm25 import BM25Okapi
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from scripts.evaluate import evaluate
-from tfkp_rag.pipeline import answer_question, call_model, normalize_answer, select_context
+from tfkp_rag.pipeline import (
+    answer_question,
+    call_model,
+    fit_context_to_limits,
+    make_prompt,
+    normalize_answer,
+    prompt_token_upper_bound,
+    select_context,
+)
 from scripts.prepare_corpus import extract_corpus
 from tfkp_rag.core import tokenize
 
@@ -46,6 +54,17 @@ class RagTests(unittest.TestCase):
     def test_answer_validation_rejects_foreign_citation(self) -> None:
         raw = {"answer_ids": ["A"], "abstain": False, "rationale": "Есть основания.", "citations": ["p_0099"]}
         self.assertIsNone(normalize_answer(raw, self.question, {"p_0002"}, False))
+
+    def test_context_is_trimmed_before_request_limit(self) -> None:
+        context = [{"block_id": "p_0001", "page": 1, "text": "доказательство " * 2000}]
+        config = {
+            "model": {"max_tokens": 700},
+            "limits": {"max_single_request_tokens": 8192},
+        }
+        trimmed = fit_context_to_limits(self.question, context, config)
+        prompt = make_prompt(self.question, trimmed, retry=True)
+        self.assertLessEqual(prompt_token_upper_bound(prompt) + 700, 8192)
+        self.assertTrue(trimmed)
 
     def test_pdf_extraction_uses_stable_page_ids(self) -> None:
         with TemporaryDirectory() as directory:

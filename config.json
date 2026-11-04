@@ -1,7 +1,7 @@
 {
   "model": {
     "name": "Qwen/Qwen3.5-4B",
-    "revision": "PIN_BEFORE_SUBMISSION_WITH_HF_COMMIT_SHA",
+    "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
     "base_url_env": "LLM_BASE_URL",
     "api_key_env": "LLM_API_KEY",
     "submission_id_env": "SUBMISSION_ID",

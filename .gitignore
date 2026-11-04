@@ -12,7 +12,5 @@ index/
 *.pkl
 *.npz
 *.sha256.json
-dev_answers.jsonl
-dev_trace.jsonl
 experiments_runs/
 .env
