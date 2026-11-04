@@ -1,0 +1,15 @@
+{"id":"q_001","llm_calls":1,"input_tokens":3012,"output_tokens":170,"elapsed_ms":26813,"retrieved_block_ids":["p_0014","p_0015","p_0016","p_0017","p_0077","p_0078","p_0079"],"mode":"final"}
+{"id":"q_002","llm_calls":2,"input_tokens":6511,"output_tokens":184,"elapsed_ms":17446,"retrieved_block_ids":["p_0014","p_0015","p_0016","p_0081","p_0082","p_0083","p_0063","p_0064","p_0065"],"mode":"final"}
+{"id":"q_003","llm_calls":1,"input_tokens":3140,"output_tokens":112,"elapsed_ms":11737,"retrieved_block_ids":["p_0014","p_0015","p_0016","p_0010","p_0011","p_0012","p_0017"],"mode":"final"}
+{"id":"q_004","llm_calls":2,"input_tokens":6565,"output_tokens":324,"elapsed_ms":27052,"retrieved_block_ids":["p_0063","p_0064","p_0065","p_0044","p_0045","p_0046","p_0054","p_0055","p_0056"],"mode":"final"}
+{"id":"q_005","llm_calls":1,"input_tokens":3301,"output_tokens":220,"elapsed_ms":19218,"retrieved_block_ids":["p_0063","p_0064","p_0065","p_0029","p_0030","p_0031","p_0014","p_0015","p_0016"],"mode":"final"}
+{"id":"q_006","llm_calls":1,"input_tokens":3380,"output_tokens":139,"elapsed_ms":13366,"retrieved_block_ids":["p_0032","p_0033","p_0034","p_0031","p_0035"],"mode":"final"}
+{"id":"q_007","llm_calls":1,"input_tokens":3368,"output_tokens":138,"elapsed_ms":13825,"retrieved_block_ids":["p_0044","p_0045","p_0046","p_0053","p_0054","p_0055","p_0067","p_0068","p_0069"],"mode":"final"}
+{"id":"q_008","llm_calls":1,"input_tokens":3101,"output_tokens":90,"elapsed_ms":10002,"retrieved_block_ids":["p_0014","p_0015","p_0016","p_0063","p_0064","p_0065","p_0105","p_0106","p_0107"],"mode":"final"}
+{"id":"q_009","llm_calls":2,"input_tokens":6223,"output_tokens":369,"elapsed_ms":30634,"retrieved_block_ids":["p_0014","p_0015","p_0016","p_0017","p_0138","p_0139","p_0140"],"mode":"final"}
+{"id":"q_010","llm_calls":2,"input_tokens":6627,"output_tokens":577,"elapsed_ms":45327,"retrieved_block_ids":["p_0105","p_0106","p_0107","p_0074","p_0075","p_0076","p_0042","p_0043","p_0044"],"mode":"final"}
+{"id":"q_011","llm_calls":1,"input_tokens":3301,"output_tokens":152,"elapsed_ms":14494,"retrieved_block_ids":["p_0076","p_0077","p_0078","p_0074","p_0075","p_0083","p_0084","p_0085"],"mode":"final"}
+{"id":"q_012","llm_calls":2,"input_tokens":6889,"output_tokens":547,"elapsed_ms":43487,"retrieved_block_ids":["p_0112","p_0113","p_0114","p_0109","p_0110","p_0111","p_0066","p_0067","p_0068"],"mode":"final"}
+{"id":"q_013","llm_calls":1,"input_tokens":3345,"output_tokens":246,"elapsed_ms":21164,"retrieved_block_ids":["p_0076","p_0077","p_0078","p_0067","p_0068","p_0069","p_0029","p_0030","p_0031"],"mode":"final"}
+{"id":"q_014","llm_calls":2,"input_tokens":6649,"output_tokens":345,"elapsed_ms":28902,"retrieved_block_ids":["p_0044","p_0045","p_0046","p_0053","p_0054","p_0055","p_0032","p_0033","p_0034"],"mode":"final"}
+{"id":"q_015","llm_calls":1,"input_tokens":3462,"output_tokens":128,"elapsed_ms":13172,"retrieved_block_ids":["p_0060","p_0061","p_0062","p_0076","p_0077","p_0078","p_0112","p_0113","p_0114"],"mode":"final"}
