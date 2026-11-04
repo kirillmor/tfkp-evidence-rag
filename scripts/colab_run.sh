@@ -7,7 +7,8 @@ set -Eeuo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$PROJECT_ROOT"
 
-PYTHON_BIN="${PYTHON_BIN:-python}"
+BOOTSTRAP_PYTHON="${BOOTSTRAP_PYTHON:-python}"
+COLAB_VENV="${COLAB_VENV:-/content/tfkp-rag-py311}"
 PDF_PATH="${PDF_PATH:-data/raw/tfkp_2025.pdf}"
 INDEX_DIR="${INDEX_DIR:-index}"
 RESULTS_DIR="${COLAB_RESULTS_DIR:-}"
@@ -39,16 +40,31 @@ trap on_error ERR
 echo "Проверка GPU..."
 nvidia-smi
 
+echo "Подготовка изолированного Python 3.11..."
+$BOOTSTRAP_PYTHON -m pip install --quiet uv
+UV_BIN="$($BOOTSTRAP_PYTHON -c 'import sysconfig; print(sysconfig.get_path("scripts"))')/uv"
+if [[ ! -x "$UV_BIN" ]]; then
+  UV_BIN="$(command -v uv || true)"
+fi
+if [[ -z "$UV_BIN" ]]; then
+  echo "Не удалось найти uv после установки."
+  exit 1
+fi
+
+# uv при необходимости сам скачивает CPython 3.11 в кэш Colab.
+$UV_BIN venv "$COLAB_VENV" --python 3.11
+PYTHON_BIN="$COLAB_VENV/bin/python"
+VLLM_BIN="$COLAB_VENV/bin/vllm"
+
 PYTHON_VERSION="$($PYTHON_BIN -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
 if [[ "$PYTHON_VERSION" != "3.11" ]]; then
-  echo "Требуется Python 3.11, обнаружен Python ${PYTHON_VERSION}."
-  echo "Выберите в Colab runtime с Python 3.11 и повторите запуск."
+  echo "uv не создал Python 3.11: обнаружен Python ${PYTHON_VERSION}."
   exit 1
 fi
 
 echo "Установка зависимостей проекта и vLLM..."
-$PYTHON_BIN -m pip install --quiet -r requirements.txt
-$PYTHON_BIN -m pip install --quiet vllm
+$UV_BIN pip install --python "$PYTHON_BIN" --quiet -r requirements.txt
+$UV_BIN pip install --python "$PYTHON_BIN" --quiet vllm
 
 if [[ ! -f "$PDF_PATH" ]]; then
   echo "Скачивание PDF учебника..."
@@ -73,7 +89,7 @@ fi
 
 mkdir -p logs
 echo "Запуск vLLM с ревизией ${MODEL_REVISION}..."
-vllm serve Qwen/Qwen3.5-4B \
+"$VLLM_BIN" serve Qwen/Qwen3.5-4B \
   --revision "$MODEL_REVISION" \
   --host 127.0.0.1 \
   --port "$VLLM_PORT" \
