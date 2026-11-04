@@ -9,7 +9,7 @@ from pathlib import Path
 
 import fitz
 
-from rag_core import write_jsonl
+from tfkp_rag.core import write_jsonl
 
 
 SECTION_RE = re.compile(r"(?:§\s*\d+(?:\.\d+)?|Глава\s+\d+)", re.IGNORECASE)

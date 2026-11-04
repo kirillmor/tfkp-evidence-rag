@@ -9,8 +9,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from evaluate import evaluate
-from rag_core import read_jsonl
+from scripts.evaluate import evaluate
+from tfkp_rag.core import read_jsonl
 
 
 EXPERIMENTS = [

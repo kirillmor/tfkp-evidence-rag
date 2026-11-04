@@ -6,8 +6,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from data_specs import DEV_ITEMS, OWN_ITEMS
-from rag_core import write_jsonl
+from tfkp_rag.data_specs import DEV_ITEMS, OWN_ITEMS
+from tfkp_rag.core import write_jsonl
 
 
 def convert(items: list[dict]) -> tuple[list[dict], list[dict]]:

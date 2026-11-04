@@ -12,10 +12,10 @@ from openai import OpenAI
 from rank_bm25 import BM25Okapi
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-from evaluate import evaluate
-from predict import answer_question, call_model, normalize_answer, select_context
-from prepare_corpus import extract_corpus
-from rag_core import tokenize
+from scripts.evaluate import evaluate
+from tfkp_rag.pipeline import answer_question, call_model, normalize_answer, select_context
+from scripts.prepare_corpus import extract_corpus
+from tfkp_rag.core import tokenize
 
 
 def miniature_index() -> dict:
@@ -62,7 +62,7 @@ class RagTests(unittest.TestCase):
     def test_retry_is_logged(self) -> None:
         config = {"model": {"max_tokens": 700}, "limits": {"max_llm_calls": 2, "max_input_tokens": 16384, "max_output_tokens": 4096, "max_single_request_tokens": 8192}}
         responses = [("не JSON", 20, 5), ('{"answer_ids":["A"],"abstain":false,"rationale":"Подтверждено.","citations":["p_0002"]}', 20, 5)]
-        with patch("predict.call_model", side_effect=responses):
+        with patch("tfkp_rag.pipeline.call_model", side_effect=responses):
             answer, trace = answer_question(None, miniature_index(), config, self.question, "final")
         self.assertEqual(answer["answer_ids"], ["A"])
         self.assertEqual(trace["llm_calls"], 2)

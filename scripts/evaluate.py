@@ -9,7 +9,7 @@ import statistics
 from collections import defaultdict
 from typing import Any
 
-from rag_core import read_jsonl, validate_questions
+from tfkp_rag.core import read_jsonl, validate_questions
 
 
 def citation_f1(predicted: list[str], acceptable: list[list[str]]) -> float:

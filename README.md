@@ -7,6 +7,18 @@
 Е. С. Половинкина «Лекции по ТФКП» (2025), приводит короткое обоснование и
 цитирует исходные постраничные блоки `p_XXXX`.
 
+## Структура проекта
+
+```text
+build_index.py, predict.py  обязательные точки входа из условия
+tfkp_rag/                   реализация индекса, поиска, RAG и описаний данных
+scripts/                    подготовка PDF/корпуса, оценка и эксперименты
+tests/                      модульные и интеграционные тесты
+*.jsonl                     открытый и авторский наборы вопросов с эталонами
+config.json                 единые параметры поиска и модели
+README.md, report.md        инструкция и отчёт
+```
+
 ## Требования
 
 - Python 3.11;
@@ -22,10 +34,10 @@ python -m pip install -r requirements.txt
 ## Подготовка источника и индекса
 
 ```bash
-python download_pdf.py --output data/raw/tfkp_2025.pdf
-python prepare_corpus.py --pdf data/raw/tfkp_2025.pdf --output data/generated/corpus.jsonl
-python prepare_datasets.py
-python pin_model_revision.py --config config.json
+python -m scripts.download_pdf --output data/raw/tfkp_2025.pdf
+python -m scripts.prepare_corpus --pdf data/raw/tfkp_2025.pdf --output data/generated/corpus.jsonl
+python -m scripts.prepare_datasets
+python -m scripts.pin_model_revision --config config.json
 python build_index.py --corpus data/generated/corpus.jsonl --output ./index --config config.json
 ```
 
@@ -53,7 +65,7 @@ export LLM_API_KEY=EMPTY
 export SUBMISSION_ID=local-dev
 python predict.py --index ./index --questions dev_questions.jsonl \
   --output dev_answers.jsonl --trace dev_trace.jsonl --config config.json
-python evaluate.py --questions dev_questions.jsonl --answers dev_answers.jsonl \
+python -m scripts.evaluate --questions dev_questions.jsonl --answers dev_answers.jsonl \
   --gold dev_gold.jsonl --trace dev_trace.jsonl
 ```
 
@@ -76,7 +88,7 @@ python evaluate.py --questions dev_questions.jsonl --answers dev_answers.jsonl \
 ## Эксперименты и проверки
 
 ```bash
-python run_experiments.py --index ./index
+python -m scripts.run_experiments --index ./index
 python -m unittest discover -s tests -v
 ```
 
