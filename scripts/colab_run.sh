@@ -64,8 +64,9 @@ if [[ "$PYTHON_VERSION" != "3.11" ]]; then
 fi
 
 echo "Установка зависимостей проекта и vLLM..."
-$UV_BIN pip install --python "$PYTHON_BIN" --quiet -r requirements.txt
-$UV_BIN pip install --python "$PYTHON_BIN" --quiet vllm
+# Одна транзакция не позволяет vLLM заменить закреплённый NumPy несовместимой версией.
+$UV_BIN pip install --python "$PYTHON_BIN" --reinstall --quiet -r requirements.txt vllm
+$PYTHON_BIN -c 'import numpy, scipy; assert numpy.__version__ == "1.26.4"; assert scipy.__version__ == "1.14.1"'
 
 if [[ ! -f "$PDF_PATH" ]]; then
   echo "Скачивание PDF учебника..."
